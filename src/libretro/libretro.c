@@ -118,13 +118,49 @@ static retro_environment_t environ_cb;
 static retro_input_poll_t input_poll_cb;
 static retro_input_state_t input_state_cb;
 
+unsigned skip_disclaimer = 0;
+
+static void update_variables(void)
+{
+    struct retro_variable var;
+    
+    var.value = NULL;
+    var.key = "mame2000-skip_disclaimer";
+    
+    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) || var.value)
+    {
+        if(strcmp(var.value, "enabled") == 0)
+            skip_disclaimer = 1;
+        else
+            skip_disclaimer = 0;
+    }
+    else
+        skip_disclaimer = 0;
+    
+    var.value = NULL;
+    var.key = "mame2000-show_gameinfo";
+    
+    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) || var.value)
+    {
+        if(strcmp(var.value, "enabled") == 0)
+            global_showinfo = 1;
+        else
+            global_showinfo = 0;
+    }
+    else
+        global_showinfo = 0;
+}
+
 void retro_set_environment(retro_environment_t cb)
 {
    static const struct retro_variable vars[] = {
-      { "mame2003-skip_disclaimer", "Skip Disclaimer; disabled|enabled" },
+      { "mame2000-skip_disclaimer", "Skip Disclaimer; enabled|disabled" },
+      { "mame2000-show_gameinfo", "Show Game Information; disabled|enabled" },
       { NULL, NULL },
    };
    environ_cb = cb;
+    
+   cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void*)vars);
 }
 
 void retro_set_audio_sample(retro_audio_sample_t cb)
@@ -343,6 +379,8 @@ void retro_run(void)
       environ_cb(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
 #endif
 
+   bool updated = false;
+    
    update_input();
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
@@ -573,24 +611,4 @@ void retro_cheat_set(unsigned index, bool enabled, const char *code)
    (void)index;
    (void)enabled;
    (void)code;
-}
-
-unsigned skip_disclaimer = 0;
-
-static void update_variables(void)
-{
-   struct retro_variable var;
-   
-   var.value = NULL;
-   var.key = "mame2003-skip_disclaimer";
-
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) || var.value)
-   {
-       if(strcmp(var.value, "enabled") == 0)
-          skip_disclaimer = 1;
-       else
-          skip_disclaimer = 0;
-   }
-   else
-      skip_disclaimer = 0;
 }

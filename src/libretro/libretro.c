@@ -450,6 +450,13 @@ bool retro_load_game(const struct retro_game_info *info)
 
    /* parse generic (os-independent) options */
    //parse_cmdline (argc, argv, game_index);
+   /* if this ignored, need to set up defaults here */
+
+   /* set default subdirectories */
+   extern char *nvdir, *hidir, *cfgdir;
+   nvdir      = get_string ("directory", "nvram",   NULL, IMAMEBASEPATH);
+   hidir      = get_string ("directory", "hi",      NULL, IMAMEBASEPATH);
+   cfgdir     = get_string ("directory", "cfg",     NULL, IMAMEBASEPATH);
 
    Machine->sample_rate = 32000;
    options.samplerate = 32000;

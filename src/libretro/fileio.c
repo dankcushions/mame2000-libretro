@@ -805,10 +805,6 @@ void *osd_fopen (const char *game, const char *filename, int filetype, int _writ
 		break;
 
 	case OSD_FILETYPE_INPUTLOG:
-		/* attempt to create the directory
-		 * (if it already exists nothing will happen) */
-		mkdir(inpdir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-
 		sprintf (name, "%s/%s.inp", inpdir, gamename);
 		f->type = kPlainFile;
 		f->file = fopen (name, _write ? "wb" : "rb");
@@ -853,10 +849,6 @@ void *osd_fopen (const char *game, const char *filename, int filetype, int _writ
         break;
 
 	case OSD_FILETYPE_STATE:
-		/* attempt to create the directory
-		 * (if it already exists nothing will happen) */
-		mkdir(stadir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-
 		sprintf (name, "%s/%s.sta", stadir, gamename);
 		f->file = fopen (name, _write ? "wb" : "rb");
 		found = !(f->file == 0);
